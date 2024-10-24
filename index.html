@@ -40,76 +40,38 @@ app.listen(PORT, () => {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AHK Demo Site - Комментарии</title>
-    <style>
-        #comments {
-            margin-top: 20px;
-            border: 1px solid #ccc;
-            padding: 10px;
-        }
-        .comment {
-            margin-bottom: 10px;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 5px;
-        }
-    </style>
+    <title>Комментарии</title>
 </head>
 <body>
-    <h1>Оставить комментарий через AHK</h1>
-    <form id="messageForm">
-        <label for="message">Сообщение:</label><br>
-        <input type="text" id="message" name="message"><br><br>
-        <button type="button" onclick="submitMessage()">Отправить</button>
-    </form>
-
-    <h2>Комментарии:</h2>
-    <div id="comments">
-        <!-- Здесь будут отображаться комментарии -->
-    </div>
+    <h1>Комментарии</h1>
+    <input type="text" id="commentInput" placeholder="Ваш комментарий">
+    <button onclick="submitComment()">Отправить</button>
+    <div id="commentsContainer"></div>
 
     <script>
-        // Функция для загрузки комментариев из LocalStorage
-        function loadComments() {
-            const comments = JSON.parse(localStorage.getItem("comments")) || [];
-            const commentsContainer = document.getElementById("comments");
-
-            // Очищаем текущий список комментариев
-            commentsContainer.innerHTML = "";
-
-            // Выводим все комментарии на страницу
-            comments.forEach((comment) => {
-                const commentDiv = document.createElement("div");
-                commentDiv.className = "comment";
-                commentDiv.innerText = comment;
-                commentsContainer.appendChild(commentDiv);
-            });
+        async function fetchComments() {
+            const response = await fetch('http://localhost:5000/comments');
+            const comments = await response.json();
+            const commentsContainer = document.getElementById('commentsContainer');
+            commentsContainer.innerHTML = comments.map(comment => `<div>${comment.text}</div>`).join('');
         }
 
-        // Функция для добавления комментария
-        function submitMessage() {
-            const message = document.getElementById("message").value;
-            if (message.trim() !== "") {
-                // Получаем текущие комментарии из LocalStorage
-                let comments = JSON.parse(localStorage.getItem("comments")) || [];
-                
-                // Добавляем новый комментарий
-                comments.push(message);
-                
-                // Сохраняем обновленный список комментариев в LocalStorage
-                localStorage.setItem("comments", JSON.stringify(comments));
+        async function submitComment() {
+            const commentInput = document.getElementById('commentInput');
+            const commentText = commentInput.value;
 
-                // Перезагружаем комментарии на странице
-                loadComments();
-
-                // Очищаем поле ввода после отправки
-                document.getElementById("message").value = "";
+            if (commentText) {
+                await fetch('http://localhost:5000/comments', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: commentText }),
+                });
+                commentInput.value = '';
+                fetchComments();  // Обновляем комментарии
             }
         }
 
-        // Загружаем комментарии при загрузке страницы
-        window.onload = function() {
-            loadComments();
-        };
+        window.onload = fetchComments;  // Загружаем комментарии при загрузке страницы
     </script>
 </body>
 </html>
