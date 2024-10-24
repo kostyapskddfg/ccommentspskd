@@ -31,15 +31,15 @@
     </div>
 
     <script>
-        // Функция для отображения комментариев из LocalStorage
+        // Функция для загрузки комментариев из LocalStorage
         function loadComments() {
             const comments = JSON.parse(localStorage.getItem("comments")) || [];
             const commentsContainer = document.getElementById("comments");
 
-            // Очистка текущего списка комментариев
+            // Очищаем текущий список комментариев
             commentsContainer.innerHTML = "";
 
-            // Вывод всех комментариев
+            // Выводим все комментарии на страницу
             comments.forEach((comment) => {
                 const commentDiv = document.createElement("div");
                 commentDiv.className = "comment";
@@ -58,18 +58,18 @@
                 // Добавляем новый комментарий
                 comments.push(message);
                 
-                // Сохраняем обновленный список в LocalStorage
+                // Сохраняем обновленный список комментариев в LocalStorage
                 localStorage.setItem("comments", JSON.stringify(comments));
 
-                // Перезагружаем комментарии
+                // Перезагружаем комментарии на странице
                 loadComments();
 
-                // Очищаем поле ввода
+                // Очищаем поле ввода после отправки
                 document.getElementById("message").value = "";
             }
         }
 
-        // Загрузка комментариев при загрузке страницы
+        // Загружаем комментарии при загрузке страницы
         window.onload = function() {
             loadComments();
         };
