@@ -31,21 +31,48 @@
     </div>
 
     <script>
+        // Функция для отображения комментариев из LocalStorage
+        function loadComments() {
+            const comments = JSON.parse(localStorage.getItem("comments")) || [];
+            const commentsContainer = document.getElementById("comments");
+
+            // Очистка текущего списка комментариев
+            commentsContainer.innerHTML = "";
+
+            // Вывод всех комментариев
+            comments.forEach((comment) => {
+                const commentDiv = document.createElement("div");
+                commentDiv.className = "comment";
+                commentDiv.innerText = comment;
+                commentsContainer.appendChild(commentDiv);
+            });
+        }
+
+        // Функция для добавления комментария
         function submitMessage() {
             const message = document.getElementById("message").value;
             if (message.trim() !== "") {
-                // Создаем новый элемент для комментария
-                const comment = document.createElement("div");
-                comment.className = "comment";
-                comment.innerText = message;
+                // Получаем текущие комментарии из LocalStorage
+                let comments = JSON.parse(localStorage.getItem("comments")) || [];
+                
+                // Добавляем новый комментарий
+                comments.push(message);
+                
+                // Сохраняем обновленный список в LocalStorage
+                localStorage.setItem("comments", JSON.stringify(comments));
 
-                // Добавляем комментарий в секцию комментариев
-                document.getElementById("comments").appendChild(comment);
+                // Перезагружаем комментарии
+                loadComments();
 
                 // Очищаем поле ввода
                 document.getElementById("message").value = "";
             }
         }
+
+        // Загрузка комментариев при загрузке страницы
+        window.onload = function() {
+            loadComments();
+        };
     </script>
 </body>
 </html>
