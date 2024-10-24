@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AHK Demo Site - Комментарии</title>
+    <style>
+        #comments {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        .comment {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Оставить комментарий через AHK</h1>
+    <form id="messageForm">
+        <label for="message">Сообщение:</label><br>
+        <input type="text" id="message" name="message"><br><br>
+        <button type="button" onclick="submitMessage()">Отправить</button>
+    </form>
+
+    <h2>Комментарии:</h2>
+    <div id="comments">
+        <!-- Здесь будут отображаться комментарии -->
+    </div>
+
+    <script>
+        function submitMessage() {
+            const message = document.getElementById("message").value;
+            if (message.trim() !== "") {
+                // Создаем новый элемент для комментария
+                const comment = document.createElement("div");
+                comment.className = "comment";
+                comment.innerText = message;
+
+                // Добавляем комментарий в секцию комментариев
+                document.getElementById("comments").appendChild(comment);
+
+                // Очищаем поле ввода
+                document.getElementById("message").value = "";
+            }
+        }
+    </script>
+</body>
+</html>
